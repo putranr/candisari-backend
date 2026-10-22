@@ -1,0 +1,2218 @@
+[
+  {
+    "id": "schema.public",
+    "label": "Create schema \"public\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres"
+    },
+    "precheck": [],
+    "execute": [
+      {
+        "description": "Create schema \"public\"",
+        "sql": "CREATE SCHEMA IF NOT EXISTS \"public\"",
+        "params": []
+      }
+    ],
+    "postcheck": []
+  },
+  {
+    "id": "table.Admin",
+    "label": "Create table \"Admin\"",
+    "summary": "Creates table \"Admin\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "Admin"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"Admin\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Admin\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"Admin\"",
+        "sql": "CREATE TABLE \"public\".\"Admin\" (\n  \"createdAt\" timestamptz DEFAULT (now()) NOT NULL,\n  \"email\" text NOT NULL,\n  \"id\" SERIAL NOT NULL,\n  \"isActive\" bool DEFAULT true NOT NULL,\n  \"name\" text NOT NULL,\n  \"password\" text NOT NULL,\n  \"role\" text DEFAULT 'ADMIN' NOT NULL,\n  \"updatedAt\" timestamptz NOT NULL,\n  PRIMARY KEY (\"id\"),\n  CONSTRAINT \"Admin_role_check_fbe83a19\" CHECK (\"role\" IN ('SUPER_ADMIN', 'ADMIN'))\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"Admin\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Admin\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.Agenda",
+    "label": "Create table \"Agenda\"",
+    "summary": "Creates table \"Agenda\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "Agenda"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"Agenda\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Agenda\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"Agenda\"",
+        "sql": "CREATE TABLE \"public\".\"Agenda\" (\n  \"createdAt\" timestamptz DEFAULT (now()) NOT NULL,\n  \"createdBy\" int4 NOT NULL,\n  \"description\" text NOT NULL,\n  \"endDate\" timestamptz,\n  \"id\" SERIAL NOT NULL,\n  \"image\" text,\n  \"location\" text,\n  \"slug\" text NOT NULL,\n  \"startDate\" timestamptz NOT NULL,\n  \"status\" text DEFAULT 'UPCOMING' NOT NULL,\n  \"title\" text NOT NULL,\n  \"updatedAt\" timestamptz NOT NULL,\n  PRIMARY KEY (\"id\"),\n  CONSTRAINT \"Agenda_status_check_b83c7418\" CHECK (\"status\" IN ('UPCOMING', 'ONGOING', 'FINISHED', 'CANCELLED'))\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"Agenda\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Agenda\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.Announcement",
+    "label": "Create table \"Announcement\"",
+    "summary": "Creates table \"Announcement\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "Announcement"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"Announcement\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Announcement\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"Announcement\"",
+        "sql": "CREATE TABLE \"public\".\"Announcement\" (\n  \"content\" text NOT NULL,\n  \"createdAt\" timestamptz DEFAULT (now()) NOT NULL,\n  \"createdBy\" int4 NOT NULL,\n  \"expiredAt\" timestamptz,\n  \"id\" SERIAL NOT NULL,\n  \"priority\" text DEFAULT 'NORMAL' NOT NULL,\n  \"publishedAt\" timestamptz,\n  \"slug\" text NOT NULL,\n  \"status\" text DEFAULT 'DRAFT' NOT NULL,\n  \"title\" text NOT NULL,\n  \"updatedAt\" timestamptz NOT NULL,\n  PRIMARY KEY (\"id\"),\n  CONSTRAINT \"Announcement_priority_check_43311681\" CHECK (\"priority\" IN ('NORMAL', 'IMPORTANT', 'URGENT')),\n  CONSTRAINT \"Announcement_status_check_bc64f66b\" CHECK (\"status\" IN ('DRAFT', 'PUBLISHED', 'ARCHIVED'))\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"Announcement\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Announcement\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.ContactInfo",
+    "label": "Create table \"ContactInfo\"",
+    "summary": "Creates table \"ContactInfo\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "ContactInfo"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"ContactInfo\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"ContactInfo\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"ContactInfo\"",
+        "sql": "CREATE TABLE \"public\".\"ContactInfo\" (\n  \"address\" text NOT NULL,\n  \"email\" text,\n  \"id\" SERIAL NOT NULL,\n  \"latitude\" numeric,\n  \"longitude\" numeric,\n  \"officeHours\" text,\n  \"phone\" text,\n  \"updatedAt\" timestamptz NOT NULL,\n  \"whatsapp\" text,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"ContactInfo\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"ContactInfo\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.Document",
+    "label": "Create table \"Document\"",
+    "summary": "Creates table \"Document\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "Document"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"Document\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Document\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"Document\"",
+        "sql": "CREATE TABLE \"public\".\"Document\" (\n  \"category\" text,\n  \"createdAt\" timestamptz DEFAULT (now()) NOT NULL,\n  \"description\" text,\n  \"fileName\" text NOT NULL,\n  \"fileSize\" int4,\n  \"fileType\" text NOT NULL,\n  \"fileUrl\" text NOT NULL,\n  \"id\" SERIAL NOT NULL,\n  \"publishedAt\" timestamptz,\n  \"title\" text NOT NULL,\n  \"updatedAt\" timestamptz NOT NULL,\n  \"uploadedBy\" int4 NOT NULL,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"Document\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Document\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.HeroBanner",
+    "label": "Create table \"HeroBanner\"",
+    "summary": "Creates table \"HeroBanner\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "HeroBanner"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"HeroBanner\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"HeroBanner\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"HeroBanner\"",
+        "sql": "CREATE TABLE \"public\".\"HeroBanner\" (\n  \"buttonText\" text,\n  \"buttonUrl\" text,\n  \"createdAt\" timestamptz DEFAULT (now()) NOT NULL,\n  \"id\" SERIAL NOT NULL,\n  \"image\" text,\n  \"isActive\" bool DEFAULT true NOT NULL,\n  \"sortOrder\" int4 DEFAULT 0 NOT NULL,\n  \"subtitle\" text,\n  \"title\" text NOT NULL,\n  \"updatedAt\" timestamptz NOT NULL,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"HeroBanner\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"HeroBanner\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.News",
+    "label": "Create table \"News\"",
+    "summary": "Creates table \"News\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "News"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"News\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"News\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"News\"",
+        "sql": "CREATE TABLE \"public\".\"News\" (\n  \"authorId\" int4 NOT NULL,\n  \"categoryId\" int4 NOT NULL,\n  \"content\" text NOT NULL,\n  \"createdAt\" timestamptz DEFAULT (now()) NOT NULL,\n  \"excerpt\" text,\n  \"id\" SERIAL NOT NULL,\n  \"image\" text,\n  \"publishedAt\" timestamptz,\n  \"slug\" text NOT NULL,\n  \"status\" text DEFAULT 'DRAFT' NOT NULL,\n  \"title\" text NOT NULL,\n  \"updatedAt\" timestamptz NOT NULL,\n  PRIMARY KEY (\"id\"),\n  CONSTRAINT \"News_status_check_bc64f66b\" CHECK (\"status\" IN ('DRAFT', 'PUBLISHED', 'ARCHIVED'))\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"News\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"News\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.NewsCategory",
+    "label": "Create table \"NewsCategory\"",
+    "summary": "Creates table \"NewsCategory\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "NewsCategory"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"NewsCategory\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"NewsCategory\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"NewsCategory\"",
+        "sql": "CREATE TABLE \"public\".\"NewsCategory\" (\n  \"createdAt\" timestamptz DEFAULT (now()) NOT NULL,\n  \"id\" SERIAL NOT NULL,\n  \"name\" text NOT NULL,\n  \"slug\" text NOT NULL,\n  \"updatedAt\" timestamptz NOT NULL,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"NewsCategory\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"NewsCategory\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.OrganizationMember",
+    "label": "Create table \"OrganizationMember\"",
+    "summary": "Creates table \"OrganizationMember\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "OrganizationMember"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"OrganizationMember\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"OrganizationMember\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"OrganizationMember\"",
+        "sql": "CREATE TABLE \"public\".\"OrganizationMember\" (\n  \"createdAt\" timestamptz DEFAULT (now()) NOT NULL,\n  \"id\" SERIAL NOT NULL,\n  \"name\" text NOT NULL,\n  \"photo\" text,\n  \"position\" text NOT NULL,\n  \"profileId\" int4 NOT NULL,\n  \"sortOrder\" int4 DEFAULT 0 NOT NULL,\n  \"updatedAt\" timestamptz NOT NULL,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"OrganizationMember\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"OrganizationMember\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.Profile",
+    "label": "Create table \"Profile\"",
+    "summary": "Creates table \"Profile\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "Profile"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"Profile\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Profile\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"Profile\"",
+        "sql": "CREATE TABLE \"public\".\"Profile\" (\n  \"about\" text NOT NULL,\n  \"history\" text,\n  \"id\" SERIAL NOT NULL,\n  \"mission\" text,\n  \"updatedAt\" timestamptz NOT NULL,\n  \"vision\" text,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"Profile\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Profile\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.Service",
+    "label": "Create table \"Service\"",
+    "summary": "Creates table \"Service\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "Service"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"Service\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Service\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"Service\"",
+        "sql": "CREATE TABLE \"public\".\"Service\" (\n  \"cost\" text,\n  \"createdAt\" timestamptz DEFAULT (now()) NOT NULL,\n  \"createdBy\" int4 NOT NULL,\n  \"description\" text NOT NULL,\n  \"estimatedTime\" text,\n  \"icon\" text,\n  \"id\" SERIAL NOT NULL,\n  \"name\" text NOT NULL,\n  \"shortDescription\" text,\n  \"slug\" text NOT NULL,\n  \"status\" text DEFAULT 'ACTIVE' NOT NULL,\n  \"updatedAt\" timestamptz NOT NULL,\n  PRIMARY KEY (\"id\"),\n  CONSTRAINT \"Service_status_check_ee520df2\" CHECK (\"status\" IN ('ACTIVE', 'INACTIVE'))\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"Service\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Service\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.ServiceFAQ",
+    "label": "Create table \"ServiceFAQ\"",
+    "summary": "Creates table \"ServiceFAQ\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "ServiceFAQ"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"ServiceFAQ\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"ServiceFAQ\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"ServiceFAQ\"",
+        "sql": "CREATE TABLE \"public\".\"ServiceFAQ\" (\n  \"answer\" text NOT NULL,\n  \"id\" SERIAL NOT NULL,\n  \"question\" text NOT NULL,\n  \"serviceId\" int4 NOT NULL,\n  \"sortOrder\" int4 DEFAULT 0 NOT NULL,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"ServiceFAQ\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"ServiceFAQ\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.ServiceRequirement",
+    "label": "Create table \"ServiceRequirement\"",
+    "summary": "Creates table \"ServiceRequirement\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "ServiceRequirement"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"ServiceRequirement\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"ServiceRequirement\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"ServiceRequirement\"",
+        "sql": "CREATE TABLE \"public\".\"ServiceRequirement\" (\n  \"description\" text,\n  \"id\" SERIAL NOT NULL,\n  \"name\" text NOT NULL,\n  \"serviceId\" int4 NOT NULL,\n  \"sortOrder\" int4 DEFAULT 0 NOT NULL,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"ServiceRequirement\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"ServiceRequirement\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.ServiceStep",
+    "label": "Create table \"ServiceStep\"",
+    "summary": "Creates table \"ServiceStep\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "ServiceStep"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"ServiceStep\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"ServiceStep\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"ServiceStep\"",
+        "sql": "CREATE TABLE \"public\".\"ServiceStep\" (\n  \"description\" text,\n  \"id\" SERIAL NOT NULL,\n  \"serviceId\" int4 NOT NULL,\n  \"stepNumber\" int4 NOT NULL,\n  \"title\" text NOT NULL,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"ServiceStep\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"ServiceStep\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.Statistic",
+    "label": "Create table \"Statistic\"",
+    "summary": "Creates table \"Statistic\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "Statistic"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"Statistic\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Statistic\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"Statistic\"",
+        "sql": "CREATE TABLE \"public\".\"Statistic\" (\n  \"category\" text,\n  \"createdAt\" timestamptz DEFAULT (now()) NOT NULL,\n  \"description\" text,\n  \"id\" SERIAL NOT NULL,\n  \"title\" text NOT NULL,\n  \"unit\" text,\n  \"updatedAt\" timestamptz NOT NULL,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"Statistic\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Statistic\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.StatisticData",
+    "label": "Create table \"StatisticData\"",
+    "summary": "Creates table \"StatisticData\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "StatisticData"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"StatisticData\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"StatisticData\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"StatisticData\"",
+        "sql": "CREATE TABLE \"public\".\"StatisticData\" (\n  \"createdAt\" timestamptz DEFAULT (now()) NOT NULL,\n  \"id\" SERIAL NOT NULL,\n  \"statisticId\" int4 NOT NULL,\n  \"updatedAt\" timestamptz NOT NULL,\n  \"value\" numeric NOT NULL,\n  \"year\" int4 NOT NULL,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"StatisticData\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"StatisticData\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "unique.Admin.Admin_email_key",
+    "label": "Add unique constraint on \"Admin\" (email)",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "unique",
+        "name": "Admin_email_key",
+        "table": "Admin"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"Admin_email_key\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "Admin_email_key",
+          "public",
+          "\"public\".\"Admin\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add unique constraint \"Admin_email_key\"",
+        "sql": "ALTER TABLE \"public\".\"Admin\" ADD CONSTRAINT \"Admin_email_key\" UNIQUE (\"email\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify constraint \"Admin_email_key\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "Admin_email_key",
+          "public",
+          "\"public\".\"Admin\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "unique.Agenda.Agenda_slug_key",
+    "label": "Add unique constraint on \"Agenda\" (slug)",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "unique",
+        "name": "Agenda_slug_key",
+        "table": "Agenda"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"Agenda_slug_key\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "Agenda_slug_key",
+          "public",
+          "\"public\".\"Agenda\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add unique constraint \"Agenda_slug_key\"",
+        "sql": "ALTER TABLE \"public\".\"Agenda\" ADD CONSTRAINT \"Agenda_slug_key\" UNIQUE (\"slug\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify constraint \"Agenda_slug_key\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "Agenda_slug_key",
+          "public",
+          "\"public\".\"Agenda\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "unique.Announcement.Announcement_slug_key",
+    "label": "Add unique constraint on \"Announcement\" (slug)",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "unique",
+        "name": "Announcement_slug_key",
+        "table": "Announcement"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"Announcement_slug_key\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "Announcement_slug_key",
+          "public",
+          "\"public\".\"Announcement\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add unique constraint \"Announcement_slug_key\"",
+        "sql": "ALTER TABLE \"public\".\"Announcement\" ADD CONSTRAINT \"Announcement_slug_key\" UNIQUE (\"slug\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify constraint \"Announcement_slug_key\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "Announcement_slug_key",
+          "public",
+          "\"public\".\"Announcement\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "unique.News.News_slug_key",
+    "label": "Add unique constraint on \"News\" (slug)",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "unique",
+        "name": "News_slug_key",
+        "table": "News"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"News_slug_key\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "News_slug_key",
+          "public",
+          "\"public\".\"News\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add unique constraint \"News_slug_key\"",
+        "sql": "ALTER TABLE \"public\".\"News\" ADD CONSTRAINT \"News_slug_key\" UNIQUE (\"slug\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify constraint \"News_slug_key\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "News_slug_key",
+          "public",
+          "\"public\".\"News\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "unique.NewsCategory.NewsCategory_slug_key",
+    "label": "Add unique constraint on \"NewsCategory\" (slug)",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "unique",
+        "name": "NewsCategory_slug_key",
+        "table": "NewsCategory"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"NewsCategory_slug_key\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "NewsCategory_slug_key",
+          "public",
+          "\"public\".\"NewsCategory\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add unique constraint \"NewsCategory_slug_key\"",
+        "sql": "ALTER TABLE \"public\".\"NewsCategory\" ADD CONSTRAINT \"NewsCategory_slug_key\" UNIQUE (\"slug\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify constraint \"NewsCategory_slug_key\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "NewsCategory_slug_key",
+          "public",
+          "\"public\".\"NewsCategory\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "unique.Service.Service_slug_key",
+    "label": "Add unique constraint on \"Service\" (slug)",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "unique",
+        "name": "Service_slug_key",
+        "table": "Service"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"Service_slug_key\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "Service_slug_key",
+          "public",
+          "\"public\".\"Service\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add unique constraint \"Service_slug_key\"",
+        "sql": "ALTER TABLE \"public\".\"Service\" ADD CONSTRAINT \"Service_slug_key\" UNIQUE (\"slug\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify constraint \"Service_slug_key\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "Service_slug_key",
+          "public",
+          "\"public\".\"Service\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "unique.StatisticData.StatisticData_statisticId_year_key",
+    "label": "Add unique constraint on \"StatisticData\" (statisticId, year)",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "unique",
+        "name": "StatisticData_statisticId_year_key",
+        "table": "StatisticData"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"StatisticData_statisticId_year_key\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "StatisticData_statisticId_year_key",
+          "public",
+          "\"public\".\"StatisticData\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add unique constraint \"StatisticData_statisticId_year_key\"",
+        "sql": "ALTER TABLE \"public\".\"StatisticData\" ADD CONSTRAINT \"StatisticData_statisticId_year_key\" UNIQUE (\"statisticId\", \"year\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify constraint \"StatisticData_statisticId_year_key\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "StatisticData_statisticId_year_key",
+          "public",
+          "\"public\".\"StatisticData\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.Agenda.Agenda_createdBy_idx_ba0f792f",
+    "label": "Create index \"Agenda_createdBy_idx_ba0f792f\" on \"Agenda\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "Agenda_createdBy_idx_ba0f792f",
+        "table": "Agenda"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"Agenda_createdBy_idx_ba0f792f\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Agenda_createdBy_idx_ba0f792f\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"Agenda_createdBy_idx_ba0f792f\"",
+        "sql": "CREATE INDEX \"Agenda_createdBy_idx_ba0f792f\" ON \"public\".\"Agenda\" (\"createdBy\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"Agenda_createdBy_idx_ba0f792f\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Agenda_createdBy_idx_ba0f792f\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.Agenda.Agenda_startDate_idx_9ce08316",
+    "label": "Create index \"Agenda_startDate_idx_9ce08316\" on \"Agenda\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "Agenda_startDate_idx_9ce08316",
+        "table": "Agenda"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"Agenda_startDate_idx_9ce08316\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Agenda_startDate_idx_9ce08316\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"Agenda_startDate_idx_9ce08316\"",
+        "sql": "CREATE INDEX \"Agenda_startDate_idx_9ce08316\" ON \"public\".\"Agenda\" (\"startDate\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"Agenda_startDate_idx_9ce08316\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Agenda_startDate_idx_9ce08316\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.Agenda.Agenda_status_idx_e98638ab",
+    "label": "Create index \"Agenda_status_idx_e98638ab\" on \"Agenda\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "Agenda_status_idx_e98638ab",
+        "table": "Agenda"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"Agenda_status_idx_e98638ab\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Agenda_status_idx_e98638ab\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"Agenda_status_idx_e98638ab\"",
+        "sql": "CREATE INDEX \"Agenda_status_idx_e98638ab\" ON \"public\".\"Agenda\" (\"status\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"Agenda_status_idx_e98638ab\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Agenda_status_idx_e98638ab\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.Announcement.Announcement_createdBy_idx_ba0f792f",
+    "label": "Create index \"Announcement_createdBy_idx_ba0f792f\" on \"Announcement\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "Announcement_createdBy_idx_ba0f792f",
+        "table": "Announcement"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"Announcement_createdBy_idx_ba0f792f\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Announcement_createdBy_idx_ba0f792f\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"Announcement_createdBy_idx_ba0f792f\"",
+        "sql": "CREATE INDEX \"Announcement_createdBy_idx_ba0f792f\" ON \"public\".\"Announcement\" (\"createdBy\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"Announcement_createdBy_idx_ba0f792f\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Announcement_createdBy_idx_ba0f792f\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.Announcement.Announcement_expiredAt_idx_2b9f2cb6",
+    "label": "Create index \"Announcement_expiredAt_idx_2b9f2cb6\" on \"Announcement\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "Announcement_expiredAt_idx_2b9f2cb6",
+        "table": "Announcement"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"Announcement_expiredAt_idx_2b9f2cb6\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Announcement_expiredAt_idx_2b9f2cb6\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"Announcement_expiredAt_idx_2b9f2cb6\"",
+        "sql": "CREATE INDEX \"Announcement_expiredAt_idx_2b9f2cb6\" ON \"public\".\"Announcement\" (\"expiredAt\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"Announcement_expiredAt_idx_2b9f2cb6\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Announcement_expiredAt_idx_2b9f2cb6\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.Announcement.Announcement_publishedAt_idx_36121b91",
+    "label": "Create index \"Announcement_publishedAt_idx_36121b91\" on \"Announcement\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "Announcement_publishedAt_idx_36121b91",
+        "table": "Announcement"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"Announcement_publishedAt_idx_36121b91\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Announcement_publishedAt_idx_36121b91\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"Announcement_publishedAt_idx_36121b91\"",
+        "sql": "CREATE INDEX \"Announcement_publishedAt_idx_36121b91\" ON \"public\".\"Announcement\" (\"publishedAt\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"Announcement_publishedAt_idx_36121b91\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Announcement_publishedAt_idx_36121b91\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.Announcement.Announcement_status_idx_e98638ab",
+    "label": "Create index \"Announcement_status_idx_e98638ab\" on \"Announcement\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "Announcement_status_idx_e98638ab",
+        "table": "Announcement"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"Announcement_status_idx_e98638ab\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Announcement_status_idx_e98638ab\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"Announcement_status_idx_e98638ab\"",
+        "sql": "CREATE INDEX \"Announcement_status_idx_e98638ab\" ON \"public\".\"Announcement\" (\"status\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"Announcement_status_idx_e98638ab\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Announcement_status_idx_e98638ab\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.Document.Document_publishedAt_idx_36121b91",
+    "label": "Create index \"Document_publishedAt_idx_36121b91\" on \"Document\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "Document_publishedAt_idx_36121b91",
+        "table": "Document"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"Document_publishedAt_idx_36121b91\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Document_publishedAt_idx_36121b91\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"Document_publishedAt_idx_36121b91\"",
+        "sql": "CREATE INDEX \"Document_publishedAt_idx_36121b91\" ON \"public\".\"Document\" (\"publishedAt\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"Document_publishedAt_idx_36121b91\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Document_publishedAt_idx_36121b91\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.Document.Document_uploadedBy_idx_278397a7",
+    "label": "Create index \"Document_uploadedBy_idx_278397a7\" on \"Document\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "Document_uploadedBy_idx_278397a7",
+        "table": "Document"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"Document_uploadedBy_idx_278397a7\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Document_uploadedBy_idx_278397a7\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"Document_uploadedBy_idx_278397a7\"",
+        "sql": "CREATE INDEX \"Document_uploadedBy_idx_278397a7\" ON \"public\".\"Document\" (\"uploadedBy\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"Document_uploadedBy_idx_278397a7\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Document_uploadedBy_idx_278397a7\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.News.News_authorId_idx_e47547ed",
+    "label": "Create index \"News_authorId_idx_e47547ed\" on \"News\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "News_authorId_idx_e47547ed",
+        "table": "News"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"News_authorId_idx_e47547ed\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"News_authorId_idx_e47547ed\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"News_authorId_idx_e47547ed\"",
+        "sql": "CREATE INDEX \"News_authorId_idx_e47547ed\" ON \"public\".\"News\" (\"authorId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"News_authorId_idx_e47547ed\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"News_authorId_idx_e47547ed\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.News.News_categoryId_idx_15c304f2",
+    "label": "Create index \"News_categoryId_idx_15c304f2\" on \"News\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "News_categoryId_idx_15c304f2",
+        "table": "News"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"News_categoryId_idx_15c304f2\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"News_categoryId_idx_15c304f2\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"News_categoryId_idx_15c304f2\"",
+        "sql": "CREATE INDEX \"News_categoryId_idx_15c304f2\" ON \"public\".\"News\" (\"categoryId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"News_categoryId_idx_15c304f2\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"News_categoryId_idx_15c304f2\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.News.News_publishedAt_idx_36121b91",
+    "label": "Create index \"News_publishedAt_idx_36121b91\" on \"News\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "News_publishedAt_idx_36121b91",
+        "table": "News"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"News_publishedAt_idx_36121b91\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"News_publishedAt_idx_36121b91\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"News_publishedAt_idx_36121b91\"",
+        "sql": "CREATE INDEX \"News_publishedAt_idx_36121b91\" ON \"public\".\"News\" (\"publishedAt\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"News_publishedAt_idx_36121b91\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"News_publishedAt_idx_36121b91\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.News.News_status_idx_e98638ab",
+    "label": "Create index \"News_status_idx_e98638ab\" on \"News\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "News_status_idx_e98638ab",
+        "table": "News"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"News_status_idx_e98638ab\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"News_status_idx_e98638ab\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"News_status_idx_e98638ab\"",
+        "sql": "CREATE INDEX \"News_status_idx_e98638ab\" ON \"public\".\"News\" (\"status\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"News_status_idx_e98638ab\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"News_status_idx_e98638ab\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.OrganizationMember.OrganizationMember_profileId_idx_d9cdfcaf",
+    "label": "Create index \"OrganizationMember_profileId_idx_d9cdfcaf\" on \"OrganizationMember\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "OrganizationMember_profileId_idx_d9cdfcaf",
+        "table": "OrganizationMember"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"OrganizationMember_profileId_idx_d9cdfcaf\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"OrganizationMember_profileId_idx_d9cdfcaf\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"OrganizationMember_profileId_idx_d9cdfcaf\"",
+        "sql": "CREATE INDEX \"OrganizationMember_profileId_idx_d9cdfcaf\" ON \"public\".\"OrganizationMember\" (\"profileId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"OrganizationMember_profileId_idx_d9cdfcaf\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"OrganizationMember_profileId_idx_d9cdfcaf\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.Service.Service_createdBy_idx_ba0f792f",
+    "label": "Create index \"Service_createdBy_idx_ba0f792f\" on \"Service\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "Service_createdBy_idx_ba0f792f",
+        "table": "Service"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"Service_createdBy_idx_ba0f792f\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Service_createdBy_idx_ba0f792f\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"Service_createdBy_idx_ba0f792f\"",
+        "sql": "CREATE INDEX \"Service_createdBy_idx_ba0f792f\" ON \"public\".\"Service\" (\"createdBy\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"Service_createdBy_idx_ba0f792f\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Service_createdBy_idx_ba0f792f\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.Service.Service_status_idx_e98638ab",
+    "label": "Create index \"Service_status_idx_e98638ab\" on \"Service\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "Service_status_idx_e98638ab",
+        "table": "Service"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"Service_status_idx_e98638ab\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Service_status_idx_e98638ab\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"Service_status_idx_e98638ab\"",
+        "sql": "CREATE INDEX \"Service_status_idx_e98638ab\" ON \"public\".\"Service\" (\"status\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"Service_status_idx_e98638ab\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Service_status_idx_e98638ab\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.ServiceFAQ.ServiceFAQ_serviceId_idx_b5d9acbf",
+    "label": "Create index \"ServiceFAQ_serviceId_idx_b5d9acbf\" on \"ServiceFAQ\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "ServiceFAQ_serviceId_idx_b5d9acbf",
+        "table": "ServiceFAQ"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"ServiceFAQ_serviceId_idx_b5d9acbf\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"ServiceFAQ_serviceId_idx_b5d9acbf\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"ServiceFAQ_serviceId_idx_b5d9acbf\"",
+        "sql": "CREATE INDEX \"ServiceFAQ_serviceId_idx_b5d9acbf\" ON \"public\".\"ServiceFAQ\" (\"serviceId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"ServiceFAQ_serviceId_idx_b5d9acbf\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"ServiceFAQ_serviceId_idx_b5d9acbf\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.ServiceRequirement.ServiceRequirement_serviceId_idx_b5d9acbf",
+    "label": "Create index \"ServiceRequirement_serviceId_idx_b5d9acbf\" on \"ServiceRequirement\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "ServiceRequirement_serviceId_idx_b5d9acbf",
+        "table": "ServiceRequirement"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"ServiceRequirement_serviceId_idx_b5d9acbf\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"ServiceRequirement_serviceId_idx_b5d9acbf\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"ServiceRequirement_serviceId_idx_b5d9acbf\"",
+        "sql": "CREATE INDEX \"ServiceRequirement_serviceId_idx_b5d9acbf\" ON \"public\".\"ServiceRequirement\" (\"serviceId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"ServiceRequirement_serviceId_idx_b5d9acbf\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"ServiceRequirement_serviceId_idx_b5d9acbf\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.ServiceStep.ServiceStep_serviceId_idx_b5d9acbf",
+    "label": "Create index \"ServiceStep_serviceId_idx_b5d9acbf\" on \"ServiceStep\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "ServiceStep_serviceId_idx_b5d9acbf",
+        "table": "ServiceStep"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"ServiceStep_serviceId_idx_b5d9acbf\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"ServiceStep_serviceId_idx_b5d9acbf\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"ServiceStep_serviceId_idx_b5d9acbf\"",
+        "sql": "CREATE INDEX \"ServiceStep_serviceId_idx_b5d9acbf\" ON \"public\".\"ServiceStep\" (\"serviceId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"ServiceStep_serviceId_idx_b5d9acbf\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"ServiceStep_serviceId_idx_b5d9acbf\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.StatisticData.StatisticData_statisticId_idx_0bd582cb",
+    "label": "Create index \"StatisticData_statisticId_idx_0bd582cb\" on \"StatisticData\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "StatisticData_statisticId_idx_0bd582cb",
+        "table": "StatisticData"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"StatisticData_statisticId_idx_0bd582cb\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"StatisticData_statisticId_idx_0bd582cb\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"StatisticData_statisticId_idx_0bd582cb\"",
+        "sql": "CREATE INDEX \"StatisticData_statisticId_idx_0bd582cb\" ON \"public\".\"StatisticData\" (\"statisticId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"StatisticData_statisticId_idx_0bd582cb\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"StatisticData_statisticId_idx_0bd582cb\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.StatisticData.StatisticData_year_idx_0af80557",
+    "label": "Create index \"StatisticData_year_idx_0af80557\" on \"StatisticData\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "StatisticData_year_idx_0af80557",
+        "table": "StatisticData"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"StatisticData_year_idx_0af80557\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"StatisticData_year_idx_0af80557\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"StatisticData_year_idx_0af80557\"",
+        "sql": "CREATE INDEX \"StatisticData_year_idx_0af80557\" ON \"public\".\"StatisticData\" (\"year\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"StatisticData_year_idx_0af80557\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"StatisticData_year_idx_0af80557\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.Agenda.Agenda_createdBy_fkey",
+    "label": "Add foreign key \"Agenda_createdBy_fkey\" on \"Agenda\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "Agenda_createdBy_fkey",
+        "table": "Agenda"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"Agenda_createdBy_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "Agenda_createdBy_fkey",
+          "public",
+          "\"public\".\"Agenda\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"Agenda_createdBy_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"Agenda\"\nADD CONSTRAINT \"Agenda_createdBy_fkey\"\nFOREIGN KEY (\"createdBy\")\nREFERENCES \"public\".\"Admin\" (\"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"Agenda_createdBy_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "Agenda_createdBy_fkey",
+          "public",
+          "\"public\".\"Agenda\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.Announcement.Announcement_createdBy_fkey",
+    "label": "Add foreign key \"Announcement_createdBy_fkey\" on \"Announcement\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "Announcement_createdBy_fkey",
+        "table": "Announcement"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"Announcement_createdBy_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "Announcement_createdBy_fkey",
+          "public",
+          "\"public\".\"Announcement\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"Announcement_createdBy_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"Announcement\"\nADD CONSTRAINT \"Announcement_createdBy_fkey\"\nFOREIGN KEY (\"createdBy\")\nREFERENCES \"public\".\"Admin\" (\"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"Announcement_createdBy_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "Announcement_createdBy_fkey",
+          "public",
+          "\"public\".\"Announcement\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.Document.Document_uploadedBy_fkey",
+    "label": "Add foreign key \"Document_uploadedBy_fkey\" on \"Document\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "Document_uploadedBy_fkey",
+        "table": "Document"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"Document_uploadedBy_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "Document_uploadedBy_fkey",
+          "public",
+          "\"public\".\"Document\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"Document_uploadedBy_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"Document\"\nADD CONSTRAINT \"Document_uploadedBy_fkey\"\nFOREIGN KEY (\"uploadedBy\")\nREFERENCES \"public\".\"Admin\" (\"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"Document_uploadedBy_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "Document_uploadedBy_fkey",
+          "public",
+          "\"public\".\"Document\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.News.News_categoryId_fkey",
+    "label": "Add foreign key \"News_categoryId_fkey\" on \"News\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "News_categoryId_fkey",
+        "table": "News"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"News_categoryId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "News_categoryId_fkey",
+          "public",
+          "\"public\".\"News\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"News_categoryId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"News\"\nADD CONSTRAINT \"News_categoryId_fkey\"\nFOREIGN KEY (\"categoryId\")\nREFERENCES \"public\".\"NewsCategory\" (\"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"News_categoryId_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "News_categoryId_fkey",
+          "public",
+          "\"public\".\"News\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.News.News_authorId_fkey",
+    "label": "Add foreign key \"News_authorId_fkey\" on \"News\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "News_authorId_fkey",
+        "table": "News"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"News_authorId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "News_authorId_fkey",
+          "public",
+          "\"public\".\"News\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"News_authorId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"News\"\nADD CONSTRAINT \"News_authorId_fkey\"\nFOREIGN KEY (\"authorId\")\nREFERENCES \"public\".\"Admin\" (\"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"News_authorId_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "News_authorId_fkey",
+          "public",
+          "\"public\".\"News\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.OrganizationMember.OrganizationMember_profileId_fkey",
+    "label": "Add foreign key \"OrganizationMember_profileId_fkey\" on \"OrganizationMember\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "OrganizationMember_profileId_fkey",
+        "table": "OrganizationMember"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"OrganizationMember_profileId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "OrganizationMember_profileId_fkey",
+          "public",
+          "\"public\".\"OrganizationMember\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"OrganizationMember_profileId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"OrganizationMember\"\nADD CONSTRAINT \"OrganizationMember_profileId_fkey\"\nFOREIGN KEY (\"profileId\")\nREFERENCES \"public\".\"Profile\" (\"id\")\nON DELETE CASCADE"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"OrganizationMember_profileId_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "OrganizationMember_profileId_fkey",
+          "public",
+          "\"public\".\"OrganizationMember\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.Service.Service_createdBy_fkey",
+    "label": "Add foreign key \"Service_createdBy_fkey\" on \"Service\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "Service_createdBy_fkey",
+        "table": "Service"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"Service_createdBy_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "Service_createdBy_fkey",
+          "public",
+          "\"public\".\"Service\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"Service_createdBy_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"Service\"\nADD CONSTRAINT \"Service_createdBy_fkey\"\nFOREIGN KEY (\"createdBy\")\nREFERENCES \"public\".\"Admin\" (\"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"Service_createdBy_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "Service_createdBy_fkey",
+          "public",
+          "\"public\".\"Service\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.ServiceFAQ.ServiceFAQ_serviceId_fkey",
+    "label": "Add foreign key \"ServiceFAQ_serviceId_fkey\" on \"ServiceFAQ\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "ServiceFAQ_serviceId_fkey",
+        "table": "ServiceFAQ"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"ServiceFAQ_serviceId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "ServiceFAQ_serviceId_fkey",
+          "public",
+          "\"public\".\"ServiceFAQ\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"ServiceFAQ_serviceId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"ServiceFAQ\"\nADD CONSTRAINT \"ServiceFAQ_serviceId_fkey\"\nFOREIGN KEY (\"serviceId\")\nREFERENCES \"public\".\"Service\" (\"id\")\nON DELETE CASCADE"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"ServiceFAQ_serviceId_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "ServiceFAQ_serviceId_fkey",
+          "public",
+          "\"public\".\"ServiceFAQ\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.ServiceRequirement.ServiceRequirement_serviceId_fkey",
+    "label": "Add foreign key \"ServiceRequirement_serviceId_fkey\" on \"ServiceRequirement\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "ServiceRequirement_serviceId_fkey",
+        "table": "ServiceRequirement"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"ServiceRequirement_serviceId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "ServiceRequirement_serviceId_fkey",
+          "public",
+          "\"public\".\"ServiceRequirement\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"ServiceRequirement_serviceId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"ServiceRequirement\"\nADD CONSTRAINT \"ServiceRequirement_serviceId_fkey\"\nFOREIGN KEY (\"serviceId\")\nREFERENCES \"public\".\"Service\" (\"id\")\nON DELETE CASCADE"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"ServiceRequirement_serviceId_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "ServiceRequirement_serviceId_fkey",
+          "public",
+          "\"public\".\"ServiceRequirement\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.ServiceStep.ServiceStep_serviceId_fkey",
+    "label": "Add foreign key \"ServiceStep_serviceId_fkey\" on \"ServiceStep\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "ServiceStep_serviceId_fkey",
+        "table": "ServiceStep"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"ServiceStep_serviceId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "ServiceStep_serviceId_fkey",
+          "public",
+          "\"public\".\"ServiceStep\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"ServiceStep_serviceId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"ServiceStep\"\nADD CONSTRAINT \"ServiceStep_serviceId_fkey\"\nFOREIGN KEY (\"serviceId\")\nREFERENCES \"public\".\"Service\" (\"id\")\nON DELETE CASCADE"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"ServiceStep_serviceId_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "ServiceStep_serviceId_fkey",
+          "public",
+          "\"public\".\"ServiceStep\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.StatisticData.StatisticData_statisticId_fkey",
+    "label": "Add foreign key \"StatisticData_statisticId_fkey\" on \"StatisticData\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "StatisticData_statisticId_fkey",
+        "table": "StatisticData"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"StatisticData_statisticId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "StatisticData_statisticId_fkey",
+          "public",
+          "\"public\".\"StatisticData\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"StatisticData_statisticId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"StatisticData\"\nADD CONSTRAINT \"StatisticData_statisticId_fkey\"\nFOREIGN KEY (\"statisticId\")\nREFERENCES \"public\".\"Statistic\" (\"id\")\nON DELETE CASCADE"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"StatisticData_statisticId_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "StatisticData_statisticId_fkey",
+          "public",
+          "\"public\".\"StatisticData\""
+        ]
+      }
+    ]
+  }
+]

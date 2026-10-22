@@ -1,0 +1,128 @@
+[
+  {
+    "id": "dropCheckConstraint.News.News_status_check_bc64f66b",
+    "label": "Drop check constraint \"News_status_check_bc64f66b\" on \"News\"",
+    "operationClass": "widening",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "checkConstraint",
+        "name": "News_status_check_bc64f66b",
+        "table": "News"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"News_status_check_bc64f66b\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "News_status_check_bc64f66b",
+          "public",
+          "\"public\".\"News\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "drop check constraint \"News_status_check_bc64f66b\"",
+        "sql": "ALTER TABLE \"public\".\"News\" DROP CONSTRAINT \"News_status_check_bc64f66b\""
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify constraint \"News_status_check_bc64f66b\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "News_status_check_bc64f66b",
+          "public",
+          "\"public\".\"News\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "column.public.News.scheduledAt",
+    "label": "Add column \"scheduledAt\" to \"News\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "scheduledAt",
+        "table": "News"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"scheduledAt\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "News",
+          "scheduledAt"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"scheduledAt\"",
+        "sql": "ALTER TABLE \"public\".\"News\" ADD COLUMN \"scheduledAt\" timestamptz"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"scheduledAt\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "News",
+          "scheduledAt"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "checkConstraint.News.News_status_check_90284fb2",
+    "label": "Add check constraint \"News_status_check_90284fb2\" on \"News\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "checkConstraint",
+        "name": "News_status_check_90284fb2",
+        "table": "News"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"News_status_check_90284fb2\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "News_status_check_90284fb2",
+          "public",
+          "\"public\".\"News\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add check constraint \"News_status_check_90284fb2\"",
+        "sql": "ALTER TABLE \"public\".\"News\" ADD CONSTRAINT \"News_status_check_90284fb2\" CHECK (\"status\" IN ('DRAFT', 'PUBLISHED', 'SCHEDULED', 'ARCHIVED'))"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify constraint \"News_status_check_90284fb2\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "News_status_check_90284fb2",
+          "public",
+          "\"public\".\"News\""
+        ]
+      }
+    ]
+  }
+]

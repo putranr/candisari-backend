@@ -1,0 +1,278 @@
+[
+  {
+    "id": "table.ProfileSection",
+    "label": "Create table \"ProfileSection\"",
+    "summary": "Creates table \"ProfileSection\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "ProfileSection"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"ProfileSection\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"ProfileSection\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"ProfileSection\"",
+        "sql": "CREATE TABLE \"public\".\"ProfileSection\" (\n  \"content\" text NOT NULL,\n  \"coverImage\" text,\n  \"createdAt\" timestamptz DEFAULT (now()) NOT NULL,\n  \"id\" SERIAL NOT NULL,\n  \"publishedAt\" timestamptz,\n  \"scheduledAt\" timestamptz,\n  \"sectionType\" text NOT NULL,\n  \"slug\" text NOT NULL,\n  \"sortOrder\" int4 DEFAULT 0 NOT NULL,\n  \"status\" text DEFAULT 'DRAFT' NOT NULL,\n  \"summary\" text,\n  \"title\" text NOT NULL,\n  \"updatedAt\" timestamptz NOT NULL,\n  PRIMARY KEY (\"id\"),\n  CONSTRAINT \"ProfileSection_status_check_90284fb2\" CHECK (\"status\" IN ('DRAFT', 'PUBLISHED', 'SCHEDULED', 'ARCHIVED'))\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"ProfileSection\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"ProfileSection\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "unique.ProfileSection.ProfileSection_slug_key",
+    "label": "Add unique constraint on \"ProfileSection\" (slug)",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "unique",
+        "name": "ProfileSection_slug_key",
+        "table": "ProfileSection"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"ProfileSection_slug_key\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "ProfileSection_slug_key",
+          "public",
+          "\"public\".\"ProfileSection\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add unique constraint \"ProfileSection_slug_key\"",
+        "sql": "ALTER TABLE \"public\".\"ProfileSection\" ADD CONSTRAINT \"ProfileSection_slug_key\" UNIQUE (\"slug\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify constraint \"ProfileSection_slug_key\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "ProfileSection_slug_key",
+          "public",
+          "\"public\".\"ProfileSection\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.ProfileSection.ProfileSection_publishedAt_idx_36121b91",
+    "label": "Create index \"ProfileSection_publishedAt_idx_36121b91\" on \"ProfileSection\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "ProfileSection_publishedAt_idx_36121b91",
+        "table": "ProfileSection"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"ProfileSection_publishedAt_idx_36121b91\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"ProfileSection_publishedAt_idx_36121b91\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"ProfileSection_publishedAt_idx_36121b91\"",
+        "sql": "CREATE INDEX \"ProfileSection_publishedAt_idx_36121b91\" ON \"public\".\"ProfileSection\" (\"publishedAt\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"ProfileSection_publishedAt_idx_36121b91\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"ProfileSection_publishedAt_idx_36121b91\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.ProfileSection.ProfileSection_scheduledAt_idx_f69c1204",
+    "label": "Create index \"ProfileSection_scheduledAt_idx_f69c1204\" on \"ProfileSection\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "ProfileSection_scheduledAt_idx_f69c1204",
+        "table": "ProfileSection"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"ProfileSection_scheduledAt_idx_f69c1204\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"ProfileSection_scheduledAt_idx_f69c1204\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"ProfileSection_scheduledAt_idx_f69c1204\"",
+        "sql": "CREATE INDEX \"ProfileSection_scheduledAt_idx_f69c1204\" ON \"public\".\"ProfileSection\" (\"scheduledAt\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"ProfileSection_scheduledAt_idx_f69c1204\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"ProfileSection_scheduledAt_idx_f69c1204\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.ProfileSection.ProfileSection_sectionType_idx_509edf93",
+    "label": "Create index \"ProfileSection_sectionType_idx_509edf93\" on \"ProfileSection\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "ProfileSection_sectionType_idx_509edf93",
+        "table": "ProfileSection"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"ProfileSection_sectionType_idx_509edf93\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"ProfileSection_sectionType_idx_509edf93\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"ProfileSection_sectionType_idx_509edf93\"",
+        "sql": "CREATE INDEX \"ProfileSection_sectionType_idx_509edf93\" ON \"public\".\"ProfileSection\" (\"sectionType\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"ProfileSection_sectionType_idx_509edf93\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"ProfileSection_sectionType_idx_509edf93\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.ProfileSection.ProfileSection_sortOrder_idx_ebf2eac2",
+    "label": "Create index \"ProfileSection_sortOrder_idx_ebf2eac2\" on \"ProfileSection\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "ProfileSection_sortOrder_idx_ebf2eac2",
+        "table": "ProfileSection"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"ProfileSection_sortOrder_idx_ebf2eac2\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"ProfileSection_sortOrder_idx_ebf2eac2\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"ProfileSection_sortOrder_idx_ebf2eac2\"",
+        "sql": "CREATE INDEX \"ProfileSection_sortOrder_idx_ebf2eac2\" ON \"public\".\"ProfileSection\" (\"sortOrder\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"ProfileSection_sortOrder_idx_ebf2eac2\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"ProfileSection_sortOrder_idx_ebf2eac2\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.ProfileSection.ProfileSection_status_idx_e98638ab",
+    "label": "Create index \"ProfileSection_status_idx_e98638ab\" on \"ProfileSection\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "ProfileSection_status_idx_e98638ab",
+        "table": "ProfileSection"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"ProfileSection_status_idx_e98638ab\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"ProfileSection_status_idx_e98638ab\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"ProfileSection_status_idx_e98638ab\"",
+        "sql": "CREATE INDEX \"ProfileSection_status_idx_e98638ab\" ON \"public\".\"ProfileSection\" (\"status\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"ProfileSection_status_idx_e98638ab\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"ProfileSection_status_idx_e98638ab\""
+        ]
+      }
+    ]
+  }
+]

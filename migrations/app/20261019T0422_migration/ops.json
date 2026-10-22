@@ -1,0 +1,200 @@
+[
+  {
+    "id": "table.ActivityLog",
+    "label": "Create table \"ActivityLog\"",
+    "summary": "Creates table \"ActivityLog\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "ActivityLog"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"ActivityLog\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"ActivityLog\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"ActivityLog\"",
+        "sql": "CREATE TABLE \"public\".\"ActivityLog\" (\n  \"action\" text NOT NULL,\n  \"adminId\" int4 NOT NULL,\n  \"createdAt\" timestamptz DEFAULT (now()) NOT NULL,\n  \"description\" text NOT NULL,\n  \"entityId\" int4,\n  \"id\" SERIAL NOT NULL,\n  \"module\" text NOT NULL,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"ActivityLog\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"ActivityLog\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.ActivityLog.ActivityLog_adminId_idx_530179db",
+    "label": "Create index \"ActivityLog_adminId_idx_530179db\" on \"ActivityLog\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "ActivityLog_adminId_idx_530179db",
+        "table": "ActivityLog"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"ActivityLog_adminId_idx_530179db\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"ActivityLog_adminId_idx_530179db\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"ActivityLog_adminId_idx_530179db\"",
+        "sql": "CREATE INDEX \"ActivityLog_adminId_idx_530179db\" ON \"public\".\"ActivityLog\" (\"adminId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"ActivityLog_adminId_idx_530179db\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"ActivityLog_adminId_idx_530179db\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.ActivityLog.ActivityLog_createdAt_idx_9575dbd7",
+    "label": "Create index \"ActivityLog_createdAt_idx_9575dbd7\" on \"ActivityLog\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "ActivityLog_createdAt_idx_9575dbd7",
+        "table": "ActivityLog"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"ActivityLog_createdAt_idx_9575dbd7\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"ActivityLog_createdAt_idx_9575dbd7\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"ActivityLog_createdAt_idx_9575dbd7\"",
+        "sql": "CREATE INDEX \"ActivityLog_createdAt_idx_9575dbd7\" ON \"public\".\"ActivityLog\" (\"createdAt\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"ActivityLog_createdAt_idx_9575dbd7\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"ActivityLog_createdAt_idx_9575dbd7\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.ActivityLog.ActivityLog_module_idx_dc74a7ea",
+    "label": "Create index \"ActivityLog_module_idx_dc74a7ea\" on \"ActivityLog\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "ActivityLog_module_idx_dc74a7ea",
+        "table": "ActivityLog"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"ActivityLog_module_idx_dc74a7ea\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"ActivityLog_module_idx_dc74a7ea\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"ActivityLog_module_idx_dc74a7ea\"",
+        "sql": "CREATE INDEX \"ActivityLog_module_idx_dc74a7ea\" ON \"public\".\"ActivityLog\" (\"module\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"ActivityLog_module_idx_dc74a7ea\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"ActivityLog_module_idx_dc74a7ea\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.ActivityLog.ActivityLog_adminId_fkey",
+    "label": "Add foreign key \"ActivityLog_adminId_fkey\" on \"ActivityLog\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "ActivityLog_adminId_fkey",
+        "table": "ActivityLog"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"ActivityLog_adminId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "ActivityLog_adminId_fkey",
+          "public",
+          "\"public\".\"ActivityLog\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"ActivityLog_adminId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"ActivityLog\"\nADD CONSTRAINT \"ActivityLog_adminId_fkey\"\nFOREIGN KEY (\"adminId\")\nREFERENCES \"public\".\"Admin\" (\"id\")\nON DELETE CASCADE"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"ActivityLog_adminId_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "ActivityLog_adminId_fkey",
+          "public",
+          "\"public\".\"ActivityLog\""
+        ]
+      }
+    ]
+  }
+]

@@ -1,0 +1,158 @@
+[
+  {
+    "id": "table.WebsiteVisit",
+    "label": "Create table \"WebsiteVisit\"",
+    "summary": "Creates table \"WebsiteVisit\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "WebsiteVisit"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"WebsiteVisit\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"WebsiteVisit\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"WebsiteVisit\"",
+        "sql": "CREATE TABLE \"public\".\"WebsiteVisit\" (\n  \"id\" SERIAL NOT NULL,\n  \"ipHash\" text,\n  \"path\" text NOT NULL,\n  \"sessionId\" text,\n  \"userAgent\" text,\n  \"visitedAt\" timestamptz DEFAULT (now()) NOT NULL,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"WebsiteVisit\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"WebsiteVisit\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.WebsiteVisit.WebsiteVisit_path_idx_a72f861c",
+    "label": "Create index \"WebsiteVisit_path_idx_a72f861c\" on \"WebsiteVisit\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "WebsiteVisit_path_idx_a72f861c",
+        "table": "WebsiteVisit"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"WebsiteVisit_path_idx_a72f861c\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"WebsiteVisit_path_idx_a72f861c\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"WebsiteVisit_path_idx_a72f861c\"",
+        "sql": "CREATE INDEX \"WebsiteVisit_path_idx_a72f861c\" ON \"public\".\"WebsiteVisit\" (\"path\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"WebsiteVisit_path_idx_a72f861c\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"WebsiteVisit_path_idx_a72f861c\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.WebsiteVisit.WebsiteVisit_sessionId_idx_29f415d4",
+    "label": "Create index \"WebsiteVisit_sessionId_idx_29f415d4\" on \"WebsiteVisit\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "WebsiteVisit_sessionId_idx_29f415d4",
+        "table": "WebsiteVisit"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"WebsiteVisit_sessionId_idx_29f415d4\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"WebsiteVisit_sessionId_idx_29f415d4\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"WebsiteVisit_sessionId_idx_29f415d4\"",
+        "sql": "CREATE INDEX \"WebsiteVisit_sessionId_idx_29f415d4\" ON \"public\".\"WebsiteVisit\" (\"sessionId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"WebsiteVisit_sessionId_idx_29f415d4\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"WebsiteVisit_sessionId_idx_29f415d4\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.WebsiteVisit.WebsiteVisit_visitedAt_idx_c892254a",
+    "label": "Create index \"WebsiteVisit_visitedAt_idx_c892254a\" on \"WebsiteVisit\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "WebsiteVisit_visitedAt_idx_c892254a",
+        "table": "WebsiteVisit"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"WebsiteVisit_visitedAt_idx_c892254a\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"WebsiteVisit_visitedAt_idx_c892254a\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"WebsiteVisit_visitedAt_idx_c892254a\"",
+        "sql": "CREATE INDEX \"WebsiteVisit_visitedAt_idx_c892254a\" ON \"public\".\"WebsiteVisit\" (\"visitedAt\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"WebsiteVisit_visitedAt_idx_c892254a\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"WebsiteVisit_visitedAt_idx_c892254a\""
+        ]
+      }
+    ]
+  }
+]

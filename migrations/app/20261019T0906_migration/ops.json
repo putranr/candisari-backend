@@ -1,0 +1,170 @@
+[
+  {
+    "id": "column.public.HomeSection.publishedAt",
+    "label": "Add column \"publishedAt\" to \"HomeSection\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "publishedAt",
+        "table": "HomeSection"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"publishedAt\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "HomeSection",
+          "publishedAt"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"publishedAt\"",
+        "sql": "ALTER TABLE \"public\".\"HomeSection\" ADD COLUMN \"publishedAt\" timestamptz"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"publishedAt\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "HomeSection",
+          "publishedAt"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "column.public.HomeSection.scheduledAt",
+    "label": "Add column \"scheduledAt\" to \"HomeSection\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "scheduledAt",
+        "table": "HomeSection"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"scheduledAt\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "HomeSection",
+          "scheduledAt"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"scheduledAt\"",
+        "sql": "ALTER TABLE \"public\".\"HomeSection\" ADD COLUMN \"scheduledAt\" timestamptz"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"scheduledAt\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "HomeSection",
+          "scheduledAt"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "column.public.HomeSection.status",
+    "label": "Add column \"status\" to \"HomeSection\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "status",
+        "table": "HomeSection"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"status\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "HomeSection",
+          "status"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"status\"",
+        "sql": "ALTER TABLE \"public\".\"HomeSection\" ADD COLUMN \"status\" text DEFAULT 'DRAFT' NOT NULL"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"status\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "HomeSection",
+          "status"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "checkConstraint.HomeSection.HomeSection_status_check_6682f995",
+    "label": "Add check constraint \"HomeSection_status_check_6682f995\" on \"HomeSection\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "checkConstraint",
+        "name": "HomeSection_status_check_6682f995",
+        "table": "HomeSection"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"HomeSection_status_check_6682f995\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "HomeSection_status_check_6682f995",
+          "public",
+          "\"public\".\"HomeSection\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add check constraint \"HomeSection_status_check_6682f995\"",
+        "sql": "ALTER TABLE \"public\".\"HomeSection\" ADD CONSTRAINT \"HomeSection_status_check_6682f995\" CHECK (\"status\" IN ('DRAFT', 'PUBLISHED', 'SCHEDULED'))"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify constraint \"HomeSection_status_check_6682f995\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "HomeSection_status_check_6682f995",
+          "public",
+          "\"public\".\"HomeSection\""
+        ]
+      }
+    ]
+  }
+]

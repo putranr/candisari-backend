@@ -1,0 +1,203 @@
+[
+  {
+    "id": "table.AdminInvitationToken",
+    "label": "Create table \"AdminInvitationToken\"",
+    "summary": "Creates table \"AdminInvitationToken\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "AdminInvitationToken"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"AdminInvitationToken\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"AdminInvitationToken\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"AdminInvitationToken\"",
+        "sql": "CREATE TABLE \"public\".\"AdminInvitationToken\" (\n  \"adminId\" int4 NOT NULL,\n  \"createdAt\" timestamptz DEFAULT (now()) NOT NULL,\n  \"expiresAt\" timestamptz NOT NULL,\n  \"id\" SERIAL NOT NULL,\n  \"tokenHash\" text NOT NULL,\n  \"usedAt\" timestamptz,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"AdminInvitationToken\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"AdminInvitationToken\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "unique.AdminInvitationToken.AdminInvitationToken_tokenHash_key",
+    "label": "Add unique constraint on \"AdminInvitationToken\" (tokenHash)",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "unique",
+        "name": "AdminInvitationToken_tokenHash_key",
+        "table": "AdminInvitationToken"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"AdminInvitationToken_tokenHash_key\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "AdminInvitationToken_tokenHash_key",
+          "public",
+          "\"public\".\"AdminInvitationToken\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add unique constraint \"AdminInvitationToken_tokenHash_key\"",
+        "sql": "ALTER TABLE \"public\".\"AdminInvitationToken\" ADD CONSTRAINT \"AdminInvitationToken_tokenHash_key\" UNIQUE (\"tokenHash\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify constraint \"AdminInvitationToken_tokenHash_key\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "AdminInvitationToken_tokenHash_key",
+          "public",
+          "\"public\".\"AdminInvitationToken\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.AdminInvitationToken.AdminInvitationToken_adminId_idx_530179db",
+    "label": "Create index \"AdminInvitationToken_adminId_idx_530179db\" on \"AdminInvitationToken\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "AdminInvitationToken_adminId_idx_530179db",
+        "table": "AdminInvitationToken"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"AdminInvitationToken_adminId_idx_530179db\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"AdminInvitationToken_adminId_idx_530179db\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"AdminInvitationToken_adminId_idx_530179db\"",
+        "sql": "CREATE INDEX \"AdminInvitationToken_adminId_idx_530179db\" ON \"public\".\"AdminInvitationToken\" (\"adminId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"AdminInvitationToken_adminId_idx_530179db\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"AdminInvitationToken_adminId_idx_530179db\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.AdminInvitationToken.AdminInvitationToken_expiresAt_idx_6b6b8c10",
+    "label": "Create index \"AdminInvitationToken_expiresAt_idx_6b6b8c10\" on \"AdminInvitationToken\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "AdminInvitationToken_expiresAt_idx_6b6b8c10",
+        "table": "AdminInvitationToken"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"AdminInvitationToken_expiresAt_idx_6b6b8c10\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"AdminInvitationToken_expiresAt_idx_6b6b8c10\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"AdminInvitationToken_expiresAt_idx_6b6b8c10\"",
+        "sql": "CREATE INDEX \"AdminInvitationToken_expiresAt_idx_6b6b8c10\" ON \"public\".\"AdminInvitationToken\" (\"expiresAt\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"AdminInvitationToken_expiresAt_idx_6b6b8c10\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"AdminInvitationToken_expiresAt_idx_6b6b8c10\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.AdminInvitationToken.AdminInvitationToken_adminId_fkey",
+    "label": "Add foreign key \"AdminInvitationToken_adminId_fkey\" on \"AdminInvitationToken\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "AdminInvitationToken_adminId_fkey",
+        "table": "AdminInvitationToken"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"AdminInvitationToken_adminId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "AdminInvitationToken_adminId_fkey",
+          "public",
+          "\"public\".\"AdminInvitationToken\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"AdminInvitationToken_adminId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"AdminInvitationToken\"\nADD CONSTRAINT \"AdminInvitationToken_adminId_fkey\"\nFOREIGN KEY (\"adminId\")\nREFERENCES \"public\".\"Admin\" (\"id\")\nON DELETE CASCADE"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"AdminInvitationToken_adminId_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "AdminInvitationToken_adminId_fkey",
+          "public",
+          "\"public\".\"AdminInvitationToken\""
+        ]
+      }
+    ]
+  }
+]

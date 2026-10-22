@@ -1,0 +1,403 @@
+// use prisma-8
+enum AdminRole {
+  SUPER_ADMIN
+  ADMIN
+}
+
+enum ContentStatus {
+  DRAFT
+  PUBLISHED
+  SCHEDULED
+  ARCHIVED
+}
+
+enum HomeSectionStatus {
+  DRAFT
+  PUBLISHED
+  SCHEDULED
+}
+
+enum AgendaStatus {
+  UPCOMING
+  ONGOING
+  FINISHED
+  CANCELLED
+}
+
+enum ServiceStatus {
+  ACTIVE
+  INACTIVE
+}
+
+enum AnnouncementPriority {
+  NORMAL
+  IMPORTANT
+  URGENT
+}
+
+enum AnnouncementStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+model Admin {
+  id            Int                        @id @default(autoincrement())
+  name          String
+  email         String                     @unique
+  password      String
+  role          AdminRole                  @default(ADMIN)
+  isActive      Boolean                    @default(true)
+  createdAt     TimestamptzString          @default(now())
+  updatedAt     temporal.updatedAtString()
+
+  news          News[]
+  agendas       Agenda[]
+  services      Service[]
+  documents     Document[]
+  announcements Announcement[]
+
+  passwordResetTokens PasswordResetToken[]
+  invitationTokens     AdminInvitationToken[]
+  activityLogs        ActivityLog[]
+}
+
+model NewsCategory {
+  id        Int                        @id @default(autoincrement())
+  name      String
+  slug      String                     @unique
+  createdAt TimestamptzString          @default(now())
+  updatedAt temporal.updatedAtString()
+
+  news      News[]
+}
+
+model News {
+  id          Int                        @id @default(autoincrement())
+  title       String
+  slug        String                     @unique
+  excerpt     String?
+  content     String
+  image       String?
+  status      ContentStatus              @default(DRAFT)
+  publishedAt TimestamptzString?
+  scheduledAt TimestamptzString?
+  categoryId  Int
+  authorId    Int
+  createdAt   TimestamptzString          @default(now())
+  updatedAt   temporal.updatedAtString()
+
+  category    NewsCategory               @relation(fields: [categoryId], references: [id])
+  author      Admin                      @relation(fields: [authorId], references: [id])
+
+  @@index([categoryId])
+  @@index([authorId])
+  @@index([status])
+  @@index([publishedAt])
+}
+
+model Agenda {
+  id          Int                        @id @default(autoincrement())
+  title       String
+  slug        String                     @unique
+  description String
+  image       String?
+  location    String?
+  startDate   TimestamptzString
+  endDate     TimestamptzString?
+  status      AgendaStatus               @default(UPCOMING)
+  createdBy   Int
+  createdAt   TimestamptzString          @default(now())
+  updatedAt   temporal.updatedAtString()
+
+  author      Admin                      @relation(fields: [createdBy], references: [id])
+
+  @@index([createdBy])
+  @@index([startDate])
+  @@index([status])
+}
+
+model Service {
+  id               Int                        @id @default(autoincrement())
+  name             String
+  slug             String                     @unique
+  shortDescription String?
+  description      String
+  icon             String?
+  status           ServiceStatus              @default(ACTIVE)
+  estimatedTime    String?
+  cost             String?
+  createdBy        Int
+  createdAt        TimestamptzString          @default(now())
+  updatedAt        temporal.updatedAtString()
+
+  author           Admin                      @relation(fields: [createdBy], references: [id])
+  requirements     ServiceRequirement[]
+  steps            ServiceStep[]
+  faqs             ServiceFAQ[]
+
+  @@index([createdBy])
+  @@index([status])
+}
+
+model ServiceRequirement {
+  id          Int     @id @default(autoincrement())
+  serviceId   Int
+  name        String
+  description String?
+  sortOrder   Int     @default(0)
+
+  service     Service @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+
+  @@index([serviceId])
+}
+
+model ServiceStep {
+  id          Int     @id @default(autoincrement())
+  serviceId   Int
+  title       String
+  description String?
+  stepNumber  Int
+
+  service     Service @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+
+  @@index([serviceId])
+}
+
+model ServiceFAQ {
+  id        Int     @id @default(autoincrement())
+  serviceId Int
+  question  String
+  answer    String
+  sortOrder Int     @default(0)
+
+  service   Service @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+
+  @@index([serviceId])
+}
+
+model Document {
+  id          Int                        @id @default(autoincrement())
+  title       String
+  description String?
+  fileUrl     String
+  fileName    String
+  fileType    String
+  fileSize    Int?
+  category    String?
+  uploadedBy  Int
+  publishedAt TimestamptzString?
+  createdAt   TimestamptzString          @default(now())
+  updatedAt   temporal.updatedAtString()
+
+  uploader    Admin                      @relation(fields: [uploadedBy], references: [id])
+
+  @@index([uploadedBy])
+  @@index([publishedAt])
+}
+
+model Announcement {
+  id          Int                        @id @default(autoincrement())
+  title       String
+  slug        String                     @unique
+  content     String
+  priority    AnnouncementPriority       @default(NORMAL)
+  status      AnnouncementStatus         @default(DRAFT)
+  publishedAt TimestamptzString?
+  expiredAt   TimestamptzString?
+  createdBy   Int
+  createdAt   TimestamptzString          @default(now())
+  updatedAt   temporal.updatedAtString()
+
+  author      Admin                      @relation(fields: [createdBy], references: [id])
+
+  @@index([createdBy])
+  @@index([status])
+  @@index([publishedAt])
+  @@index([expiredAt])
+}
+
+model Statistic {
+  id          Int                        @id @default(autoincrement())
+  title       String
+  description String?
+  unit        String?
+  category    String?
+  createdAt   TimestamptzString          @default(now())
+  updatedAt   temporal.updatedAtString()
+
+  data        StatisticData[]
+}
+
+model StatisticData {
+  id          Int                        @id @default(autoincrement())
+  statisticId Int
+  year        Int
+  value       Decimal
+  createdAt   TimestamptzString          @default(now())
+  updatedAt   temporal.updatedAtString()
+
+  statistic   Statistic                  @relation(fields: [statisticId], references: [id], onDelete: Cascade)
+
+  @@unique([statisticId, year])
+  @@index([statisticId])
+  @@index([year])
+}
+
+model Profile {
+  id        Int                        @id @default(autoincrement())
+  about     String
+  vision    String?
+  mission   String?
+  history   String?
+  updatedAt temporal.updatedAtString()
+
+  members   OrganizationMember[]
+}
+
+model OrganizationMember {
+  id        Int                        @id @default(autoincrement())
+  profileId Int
+  name      String
+  position  String
+  photo     String?
+  sortOrder Int                        @default(0)
+  createdAt TimestamptzString          @default(now())
+  updatedAt temporal.updatedAtString()
+
+  profile   Profile                    @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  @@index([profileId])
+}
+
+model ContactInfo {
+  id          Int                        @id @default(autoincrement())
+  address     String
+  phone       String?
+  email       String?
+  whatsapp    String?
+  latitude    Decimal?
+  longitude   Decimal?
+  officeHours String?
+  updatedAt   temporal.updatedAtString()
+}
+
+model HeroBanner {
+  id         Int                        @id @default(autoincrement())
+  title      String
+  subtitle   String?
+  image      String?
+  buttonText String?
+  buttonUrl  String?
+  isActive   Boolean                    @default(true)
+  sortOrder  Int                        @default(0)
+  createdAt  TimestamptzString          @default(now())
+  updatedAt  temporal.updatedAtString()
+}
+
+model PasswordResetToken {
+  id        Int                        @id @default(autoincrement())
+  adminId   Int
+  tokenHash String                     @unique
+  expiresAt TimestamptzString
+  usedAt    TimestamptzString?
+  createdAt TimestamptzString          @default(now())
+
+  admin     Admin                      @relation(fields: [adminId], references: [id], onDelete: Cascade)
+
+  @@index([adminId])
+  @@index([expiresAt])
+}
+
+model ActivityLog {
+  id          Int             @id @default(autoincrement())
+  adminId     Int
+  action      String
+  module      String
+  entityId    Int?
+  description String
+  createdAt   TimestamptzString @default(now())
+
+  admin       Admin           @relation(
+    fields: [adminId],
+    references: [id],
+    onDelete: Cascade
+  )
+
+  @@index([adminId])
+  @@index([module])
+  @@index([createdAt])
+}
+
+model WebsiteVisit {
+  id        Int                @id @default(autoincrement())
+  sessionId String?
+  path      String
+  userAgent String?
+  ipHash    String?
+  visitedAt TimestamptzString  @default(now())
+
+  @@index([path])
+  @@index([visitedAt])
+  @@index([sessionId])
+}
+
+model HomeSection {
+  id                  Int                @id @default(autoincrement())
+  sectionKey          String             @unique
+  title               String?
+  isActive            Boolean            @default(true)
+  sortOrder           Int
+  publishedSortOrder  Int?
+  status              HomeSectionStatus  @default(DRAFT)
+  scheduledAt         TimestamptzString?
+  publishedAt         TimestamptzString?
+  createdAt            TimestamptzString  @default(now())
+  updatedAt            TimestamptzString  @default(now())
+}
+enum ProfileSectionStatus {
+  DRAFT
+  PUBLISHED
+  SCHEDULED
+  ARCHIVED
+}
+
+model ProfileSection {
+  id          Int                  @id @default(autoincrement())
+  title       String
+  slug        String               @unique
+  sectionType String
+  sortOrder   Int                  @default(0)
+  summary     String?
+  content     String
+  coverImage  String?
+  status      ProfileSectionStatus @default(DRAFT)
+  publishedAt TimestamptzString?
+  scheduledAt TimestamptzString?
+  createdAt   TimestamptzString   @default(now())
+  updatedAt   temporal.updatedAtString()
+
+  @@index([status])
+  @@index([sectionType])
+  @@index([sortOrder])
+  @@index([publishedAt])
+  @@index([scheduledAt])
+}
+
+
+model AdminInvitationToken {
+  id        Int                 @id @default(autoincrement())
+  adminId   Int
+  tokenHash String              @unique
+  expiresAt TimestamptzString
+  usedAt    TimestamptzString?
+  createdAt TimestamptzString   @default(now())
+
+  admin     Admin               @relation(fields: [adminId], references: [id], onDelete: Cascade)
+
+  @@index([adminId])
+  @@index([expiresAt])
+}
+
+
+
